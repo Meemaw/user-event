@@ -2,7 +2,7 @@ import React from 'react'
 import {render, screen} from '@testing-library/react'
 import userEvent from '../../src'
 
-test.each(['input', 'textarea'])('should type text in <%s>', async type => {
+test.each(['input', 'textarea'])('should type text in <%s>', type => {
   const onChange = jest.fn()
   render(
     React.createElement(type, {
@@ -11,30 +11,30 @@ test.each(['input', 'textarea'])('should type text in <%s>', async type => {
     }),
   )
   const text = 'Hello, world!'
-  await userEvent.type(screen.getByTestId('input'), text)
+  userEvent.type(screen.getByTestId('input'), text)
   expect(onChange).toHaveBeenCalledTimes(text.length)
   expect(screen.getByTestId('input')).toHaveProperty('value', text)
 })
 
-test('should append text one by one', async () => {
+test('should append text one by one', () => {
   const onChange = jest.fn()
   render(<input data-testid="input" onChange={onChange} />)
-  await userEvent.type(screen.getByTestId('input'), 'hello')
-  await userEvent.type(screen.getByTestId('input'), ' world')
+  userEvent.type(screen.getByTestId('input'), 'hello')
+  userEvent.type(screen.getByTestId('input'), ' world')
   expect(onChange).toHaveBeenCalledTimes('hello world'.length)
   expect(screen.getByTestId('input')).toHaveProperty('value', 'hello world')
 })
 
-test('should append text all at once', async () => {
+test('should append text all at once', () => {
   const onChange = jest.fn()
   render(<input data-testid="input" onChange={onChange} />)
-  await userEvent.type(screen.getByTestId('input'), 'hello', {allAtOnce: true})
-  await userEvent.type(screen.getByTestId('input'), ' world', {allAtOnce: true})
+  userEvent.type(screen.getByTestId('input'), 'hello', {allAtOnce: true})
+  userEvent.type(screen.getByTestId('input'), ' world', {allAtOnce: true})
   expect(onChange).toHaveBeenCalledTimes(2)
   expect(screen.getByTestId('input')).toHaveProperty('value', 'hello world')
 })
 
-test('should not type when event.preventDefault() is called', async () => {
+test('should not type when event.preventDefault() is called', () => {
   const onChange = jest.fn()
   const onKeydown = jest
     .fn()
@@ -43,7 +43,7 @@ test('should not type when event.preventDefault() is called', async () => {
     <input data-testid="input" onKeyDown={onKeydown} onChange={onChange} />,
   )
   const text = 'Hello, world!'
-  await userEvent.type(screen.getByTestId('input'), text)
+  userEvent.type(screen.getByTestId('input'), text)
   expect(onKeydown).toHaveBeenCalledTimes(text.length)
   expect(onChange).toHaveBeenCalledTimes(0)
   expect(screen.getByTestId('input')).not.toHaveProperty('value', text)
@@ -51,7 +51,7 @@ test('should not type when event.preventDefault() is called', async () => {
 
 test.each(['input', 'textarea'])(
   'should not type when <%s> is disabled',
-  async type => {
+  type => {
     const onChange = jest.fn()
     render(
       React.createElement(type, {
@@ -61,7 +61,7 @@ test.each(['input', 'textarea'])(
       }),
     )
     const text = 'Hello, world!'
-    await userEvent.type(screen.getByTestId('input'), text)
+    userEvent.type(screen.getByTestId('input'), text)
     expect(onChange).not.toHaveBeenCalled()
     expect(screen.getByTestId('input')).toHaveProperty('value', '')
   },
@@ -69,7 +69,7 @@ test.each(['input', 'textarea'])(
 
 test.each(['input', 'textarea'])(
   'should not type when <%s> is readOnly',
-  async type => {
+  type => {
     const onChange = jest.fn()
     const onKeyDown = jest.fn()
     const onKeyPress = jest.fn()
@@ -85,7 +85,7 @@ test.each(['input', 'textarea'])(
       }),
     )
     const text = 'Hello, world!'
-    await userEvent.type(screen.getByTestId('input'), text)
+    userEvent.type(screen.getByTestId('input'), text)
     expect(onKeyDown).toHaveBeenCalledTimes(text.length)
     expect(onKeyPress).toHaveBeenCalledTimes(text.length)
     expect(onKeyUp).toHaveBeenCalledTimes(text.length)
@@ -154,7 +154,7 @@ test.each(['input', 'textarea'])(
 
 test.each(['input', 'textarea'])(
   'should enter text in <%s> up to maxLength if provided',
-  async type => {
+  type => {
     const onChange = jest.fn()
     const onKeyDown = jest.fn()
     const onKeyPress = jest.fn()
@@ -177,7 +177,7 @@ test.each(['input', 'textarea'])(
 
     const inputEl = screen.getByTestId('input')
 
-    await userEvent.type(inputEl, text)
+    userEvent.type(inputEl, text)
 
     expect(inputEl).toHaveProperty('value', slicedText)
     expect(onChange).toHaveBeenCalledTimes(slicedText.length)
@@ -205,7 +205,7 @@ test.each(['input', 'textarea'])(
 
 test.each(['input', 'textarea'])(
   'should append text in <%s> up to maxLength if provided',
-  async type => {
+  type => {
     const onChange = jest.fn()
     const onKeyDown = jest.fn()
     const onKeyPress = jest.fn()
@@ -230,8 +230,8 @@ test.each(['input', 'textarea'])(
 
     const inputEl = screen.getByTestId('input')
 
-    await userEvent.type(inputEl, text1)
-    await userEvent.type(inputEl, text2)
+    userEvent.type(inputEl, text1)
+    userEvent.type(inputEl, text2)
 
     expect(inputEl).toHaveProperty('value', slicedText)
     expect(onChange).toHaveBeenCalledTimes(slicedText.length)
